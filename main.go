@@ -24,7 +24,6 @@ func main()  {
 	cleanup := func() {
 		os.Remove(output_dirname)
 	}
-	logger.LogIfError(err, true, cleanup)
 	logger.LogIfError(os.Mkdir(output_dirname, os.ModePerm), true, cleanup)
 	for _, file := range reader.File {
 		output_filepath := filepath.Join(output_dirname, file.Name)
