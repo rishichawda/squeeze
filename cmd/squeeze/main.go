@@ -1,10 +1,11 @@
 package main
 
 import (
-	"corelib"
 	"flag"
 	"log"
 	"os"
+
+	corelib "github.com/rishichawda/squeeze"
 )
 
 var shouldExtract *bool

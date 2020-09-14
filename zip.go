@@ -1,4 +1,4 @@
-package corelib
+package squeeze
 
 import (
 	"archive/zip"
