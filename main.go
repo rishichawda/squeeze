@@ -3,6 +3,7 @@ package main
 import (
 	"corelib"
 	"flag"
+	"log"
 	"os"
 )
 
@@ -20,6 +21,7 @@ func readFlags()  {
 }
 
 func main()  {
+	log.SetFlags(0)
 	readFlags()
 	if *shouldExtract {
 		corelib.ExtractZip(*source)
