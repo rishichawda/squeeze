@@ -41,20 +41,25 @@ func ExtractZip(file_path string)  {
 	}
 	LogIfError(os.Mkdir(output_dirname, os.ModePerm), true, cleanup)
 	reader, err := zip.OpenReader(file_path)
+	defer reader.Close()
 	LogIfError(err, true, cleanup)
 	for _, file := range reader.File {
 		output_filepath := filepath.Join(output_dirname, file.Name)
+		log.SetPrefix("Extracting: ")
 		log.Println(output_filepath)
-		log.Println(file.Name)
 		if file.FileInfo().IsDir() {
 			os.Mkdir(filepath.Join(output_dirname, file.Name), os.ModePerm)
 		} else {
 			file_reader, err := file.Open()
+			defer file_reader.Close()
 			LogIfError(err, true, cleanup)
 			file_writer, err := os.Create(output_filepath)
+			defer file_writer.Close()
 			LogIfError(err, true, cleanup)
-			io.Copy(file_writer, file_reader)
-			LogIfError(file_reader.Close(), true, cleanup)
+			_, err = io.Copy(file_writer, file_reader)
+			LogIfError(err, true, cleanup)
 		}
 	}
+	log.SetPrefix("")
+	log.Println("Done!")
 }
