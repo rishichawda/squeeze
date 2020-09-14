@@ -39,7 +39,7 @@ func ExtractZip()  {
 	_, input_filename := filepath.Split(file_path)
 	output_dirname:= strings.TrimSuffix(input_filename, filepath.Ext(input_filename))
 	cleanup := func() {
-		os.Remove(output_dirname)
+		os.RemoveAll(output_dirname)
 	}
 	LogIfError(os.Mkdir(output_dirname, os.ModePerm), true, cleanup)
 	reader, err := zip.OpenReader(file_path)
