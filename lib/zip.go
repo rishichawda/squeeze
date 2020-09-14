@@ -12,7 +12,7 @@ import (
 func CompressToZip() {
 	file_path := os.Args[1]
 	_, input_filename := filepath.Split(file_path)
-	output_file, err := os.Create(input_filename)
+	output_file, err := os.Create(input_filename + ".zip")
 	defer output_file.Close()
 	cleanup := func() {
 		os.Remove(output_file.Name())
