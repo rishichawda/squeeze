@@ -2,7 +2,6 @@ package corelib
 
 import (
 	"archive/zip"
-	"flag"
 	"io"
 	"log"
 	"os"
@@ -10,8 +9,7 @@ import (
 	"strings"
 )
 
-func CompressToZip() {
-	file_path := flag.Arg(0)
+func CompressToZip(file_path string) {
 	_, input_filename := filepath.Split(file_path)
 	output_file, err := os.Create(input_filename + ".zip")
 	defer output_file.Close()
@@ -35,8 +33,7 @@ func CompressToZip() {
 	})
 }
 
-func ExtractZip()  {
-	file_path := flag.Arg(0)
+func ExtractZip(file_path string)  {
 	_, input_filename := filepath.Split(file_path)
 	output_dirname:= strings.TrimSuffix(input_filename, filepath.Ext(input_filename))
 	cleanup := func() {
