@@ -1,6 +1,7 @@
-package squeeze
+package main
 
 import (
+	"corelib"
 	"log"
 	"os"
 	"path/filepath"
@@ -16,6 +17,8 @@ func main()  {
 	_, input_filename := filepath.Split(file_path)
 	extension := filepath.Ext(input_filename)
 	if extension == ".zip" {
-		ExtractZip()
+		corelib.ExtractZip()
+	} else {
+		corelib.CompressToZip()
 	}
 }

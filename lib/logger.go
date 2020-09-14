@@ -1,4 +1,4 @@
-package squeeze
+package corelib
 
 import "log"
 

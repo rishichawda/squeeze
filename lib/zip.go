@@ -1,4 +1,4 @@
-package squeeze
+package corelib
 
 import (
 	"archive/zip"
@@ -8,6 +8,31 @@ import (
 	"path/filepath"
 	"strings"
 )
+
+func CompressToZip() {
+	file_path := os.Args[1]
+	_, input_filename := filepath.Split(file_path)
+	output_file, err := os.Create(input_filename)
+	defer output_file.Close()
+	cleanup := func() {
+		os.Remove(output_file.Name())
+	}
+	LogIfError(err, true, func ()  {})
+	file_writer := zip.NewWriter(output_file)
+	defer file_writer.Close()
+	filepath.Walk(file_path, func (path string, file_info os.FileInfo, err error) error {
+		if !file_info.IsDir() {
+			file_reader, err := os.Open(path)
+			defer file_reader.Close()
+			LogIfError(err, true, cleanup)
+			createdfile_writer, err := file_writer.Create(path)
+			LogIfError(err, true, cleanup)
+			_, err = io.Copy(createdfile_writer, file_reader)
+			LogIfError(err, true, cleanup)
+		}
+		return nil
+	})
+}
 
 func ExtractZip()  {
 	file_path := os.Args[1]
