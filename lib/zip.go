@@ -31,6 +31,7 @@ func CompressToZip(file_path string) {
 		}
 		return nil
 	})
+	log.Println("Done!")
 }
 
 func ExtractZip(file_path string)  {
