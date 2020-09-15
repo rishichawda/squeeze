@@ -2,14 +2,17 @@ package corelib
 
 import (
 	"archive/zip"
+	"compress/flate"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
-func CompressToZip(file_path string) {
+func CreateArchive(file_path string, compressionLevel int) {
+	start := time.Now()
 	_, input_filename := filepath.Split(file_path)
 	output_file, err := os.Create(input_filename + ".zip")
 	defer output_file.Close()
@@ -19,19 +22,22 @@ func CompressToZip(file_path string) {
 	LogIfError(err, true, func ()  {})
 	file_writer := zip.NewWriter(output_file)
 	defer file_writer.Close()
+	file_writer.RegisterCompressor(zip.Deflate, func(w io.Writer) (io.WriteCloser, error) {
+		return flate.NewWriter(w, compressionLevel)
+	})
 	filepath.Walk(file_path, func (path string, file_info os.FileInfo, err error) error {
 		if !file_info.IsDir() {
 			file_reader, err := os.Open(path)
 			defer file_reader.Close()
 			LogIfError(err, true, cleanup)
-			createdfile_writer, err := file_writer.Create(path)
+			created_file, err := file_writer.Create(path)
 			LogIfError(err, true, cleanup)
-			_, err = io.Copy(createdfile_writer, file_reader)
+			_, err = io.Copy(created_file, file_reader)
 			LogIfError(err, true, cleanup)
 		}
 		return nil
 	})
-	log.Println("Done!")
+	log.Printf("Done in %v!\n", time.Since(start))
 }
 
 func ExtractZip(file_path string)  {
