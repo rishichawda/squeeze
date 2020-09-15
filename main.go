@@ -18,7 +18,7 @@ func readFlags()  {
 	useGZip = flag.Bool("gzip", false, "Use GZip compression")
 	source = flag.String("src", "", "Source file path (Required)")
 	storageOnly = flag.Bool("store", false, "Don't compress zip file.")
-	level = flag.Int("level", 9, "Compression level. 0 -> Storage, 9 -> Best Compression. (Defaults to 9)")
+	flag.IntVar(level, "level", 9, "Compression level. 0 -> Fastest, 9 -> Efficient Compression. (Defaults to 9)")
 	flag.Parse()
 	if *source == "" {
 		flag.PrintDefaults()
@@ -28,9 +28,17 @@ func readFlags()  {
 		log.Println("Invalid option -store. GZip doesn't support store flag.")
 		os.Exit(1)
 	}
+	if(!*useGZip) {
+		flag.Visit(func (fl *flag.Flag) {
+			if(fl.Name == "level") {
+				log.Println("Invalid option -level. zip doesn't support level flag. If you want to disable compression for zip, use -store flag.")
+				os.Exit(1)
+			}
+		})
+	}
 	isLevelWithinThreshold := *level == 1 || *level == 9
 	if !isLevelWithinThreshold {
-		log.Println("Error: Invalid values for compression level. Should be 0 (storage) or 9 (best).")
+		log.Println("Error: Invalid values for compression level. Should be 0 (fastest) or 9 (most efficient).")
 		os.Exit(1)
 	}
 }
